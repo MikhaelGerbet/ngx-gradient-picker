@@ -59,14 +59,25 @@
 }
 
 .angle-value {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 2px;
+
+  &::after {
+    content: '°';
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px;
+    color: #666;
+    pointer-events: none;
+  }
 }
 
 .angle-input {
-  width: 44px;
-  padding: 6px 8px;
+  width: 52px;
+  padding: 6px 18px 6px 8px;
   border: 2px solid #ccc;
   border-radius: 6px;
   font-size: 13px;
