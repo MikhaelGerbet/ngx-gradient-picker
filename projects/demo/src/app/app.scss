@@ -7,6 +7,21 @@ body {
   padding: 0;
 }
 
+.github-link {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  color: #1a1a2e;
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 100;
+
+  &:hover {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
 .demo-container {
   min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
