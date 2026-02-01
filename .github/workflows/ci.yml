@@ -37,10 +37,10 @@ jobs:
         run: npm run test:ci
 
       - name: Build library
-        run: ng build ngx-gradient-picker
+        run: npx ng build ngx-gradient-picker
 
       - name: Build demo for GitHub Pages
-        run: ng build demo --configuration production --base-href /ngx-gradient-picker/
+        run: npx ng build demo --configuration production --base-href /ngx-gradient-picker/
 
       - name: Upload demo artifact
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
