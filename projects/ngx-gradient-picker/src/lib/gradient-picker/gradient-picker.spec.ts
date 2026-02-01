@@ -38,8 +38,8 @@ describe('GradientPickerComponent', () => {
     expect(component.minStops()).toBe(1);
   });
 
-  it('should have default max stops of 5', () => {
-    expect(component.maxStops()).toBe(5);
+  it('should have default max stops of 50', () => {
+    expect(component.maxStops()).toBe(50);
   });
 
   it('should have default type of linear', () => {

@@ -2,12 +2,13 @@
   class="stops-container" 
   #stopsContainer
   [class.can-add]="canAddStop() && !disabled()"
-  (click)="onContainerClick($event)"
+  (dblclick)="onContainerDblClick($event)"
+  (touchend)="onContainerTouchEnd($event)"
   (mousemove)="onContainerMouseMove($event)"
   (mouseleave)="onContainerMouseLeave()">
   
   @if (hoverPosition() !== null) {
-    <div class="playhead" [style.left.%]="hoverPosition()"></div>
+    <div class="ghost-stop" [style.left.%]="hoverPosition()"></div>
   }
   
   @for (stop of palette(); track trackByStopId($index, stop)) {
@@ -15,6 +16,7 @@
       [stop]="stop"
       [disabled]="disabled()"
       [isBeingDeleted]="isInDeleteZone() && draggingStop()?.id === stop.id"
+      [isNew]="recentlyAddedStopId() === stop.id"
       (stopSelect)="onStopSelect($event)"
       (dragStart)="onDragStart($event)"
       (colorChange)="onStopColorChange($event)"

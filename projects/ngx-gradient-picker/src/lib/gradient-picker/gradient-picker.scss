@@ -1,9 +1,13 @@
 :host {
   display: block;
+  width: 100%;
+  min-width: 300px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .gradient-picker-container {
+  width: 100%;
   background: #fff;
   border-radius: 8px;
   padding: 16px;
@@ -18,17 +22,120 @@
   gap: 12px;
   margin-bottom: 16px;
   min-height: 40px;
+  flex-wrap: wrap;
 }
 
 .gradient-picker-body {
   position: relative;
-  margin-bottom: 8px;
+  margin-bottom: 16px; // Space for stops that extend below
+  min-height: 32px;
+  // Allow stops to overflow outside the container
+  overflow: visible;
 }
 
-.gradient-picker-color-picker {
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid #eee;
+// Repeat marker - white line with handle at top
+.repeat-marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  transform: translateX(-50%);
+  z-index: 0; // Below color stops (z-index: 1) - also rendered first in DOM
+  cursor: ew-resize;
+  
+  // Invisible hit area for easier grabbing
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -12px;
+    right: -12px;
+  }
+
+  &.dragging {
+    .repeat-marker-tooltip {
+      opacity: 1;
+    }
+    
+    .repeat-marker-handle {
+      transform: translateX(-50%) translateY(-50%) scale(1.15);
+    }
+  }
+
+  &:hover:not(.dragging) {
+    .repeat-marker-handle {
+      transform: translateX(-50%) translateY(-50%) scale(1.1);
+    }
+  }
+}
+
+.repeat-marker-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+  border-radius: 1px;
+}
+
+// Repeat handle - positioned at top
+.repeat-marker-handle {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  transition: transform 0.15s ease;
+}
+
+// Mobile / Touch devices - larger handle
+@media (hover: none) and (pointer: coarse) {
+  .repeat-marker-handle {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .repeat-marker-handle {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.repeat-marker-tooltip {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 10px;
+  color: #fff;
+  background: #444;
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid transparent;
+    border-top-color: #444;
+  }
 }
 
 // Vertical layout
@@ -43,5 +150,225 @@
 :host.horizontal {
   .gradient-picker-header {
     flex-direction: row;
+  }
+}
+
+// Opacity slider container
+.opacity-slider-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  animation: fadeIn 0.2s ease-out;
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+.opacity-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #666;
+  white-space: nowrap;
+  min-width: 60px;
+
+  .opacity-icon {
+    font-size: 14px;
+  }
+
+  .opacity-text {
+    font-weight: 500;
+  }
+}
+
+.opacity-slider-wrapper {
+  flex: 1;
+  position: relative;
+  height: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.opacity-slider-bg {
+  position: absolute;
+  inset: 0;
+  margin: auto 0;
+  height: 8px;
+  border-radius: 4px;
+  pointer-events: none;
+  
+  // Checkered background for transparency
+  background-image: 
+    linear-gradient(45deg, #ccc 25%, transparent 25%),
+    linear-gradient(-45deg, #ccc 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ccc 75%),
+    linear-gradient(-45deg, transparent 75%, #ccc 75%);
+  background-size: 8px 8px;
+  background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: inherit;
+  }
+}
+
+.opacity-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    cursor: grab;
+    transition: transform 0.15s, box-shadow 0.15s;
+
+    &:hover {
+      transform: scale(1.1);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    }
+
+    &:active {
+      cursor: grabbing;
+      transform: scale(1.15);
+    }
+  }
+
+  &::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border: none;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    cursor: grab;
+    transition: transform 0.15s, box-shadow 0.15s;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    &:active {
+      cursor: grabbing;
+      transform: scale(1.15);
+    }
+  }
+
+  &::-webkit-slider-runnable-track {
+    height: 8px;
+    border-radius: 4px;
+    background: transparent;
+  }
+
+  &::-moz-range-track {
+    height: 8px;
+    border-radius: 4px;
+    background: transparent;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+
+    &::-webkit-slider-thumb {
+      cursor: not-allowed;
+    }
+
+    &::-moz-range-thumb {
+      cursor: not-allowed;
+    }
+  }
+}
+
+.opacity-value {
+  min-width: 40px;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  font-variant-numeric: tabular-nums;
+}
+
+// Mobile responsive
+@media (max-width: 480px) {
+  .gradient-picker-container {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .gradient-picker-header {
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .gradient-picker-body {
+    min-height: 44px; // Larger touch target
+  }
+
+  .opacity-slider-container {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .opacity-label {
+    min-width: 50px;
+    font-size: 11px;
+
+    .opacity-icon {
+      font-size: 12px;
+    }
+  }
+
+  .opacity-slider {
+    &::-webkit-slider-thumb {
+      width: 20px;
+      height: 20px;
+    }
+
+    &::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+// Touch devices - increase hit areas
+@media (hover: none) and (pointer: coarse) {
+  .gradient-picker-body {
+    min-height: 44px;
+  }
+
+  .opacity-slider {
+    height: 12px;
+
+    &::-webkit-slider-thumb {
+      width: 24px;
+      height: 24px;
+    }
+
+    &::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+    }
   }
 }

@@ -11,14 +11,13 @@ import {
   OnDestroy,
   viewChild
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ColorStop, createColorStop } from '../models/gradient.models';
 import { ColorStopComponent } from '../color-stop/color-stop';
 
 @Component({
   selector: 'ngx-color-stops-holder',
   standalone: true,
-  imports: [CommonModule, ColorStopComponent],
+  imports: [ColorStopComponent],
   templateUrl: './color-stops-holder.html',
   styleUrl: './color-stops-holder.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -71,6 +70,13 @@ export class ColorStopsHolderComponent implements AfterViewInit, OnDestroy {
   /** Threshold in pixels to trigger delete */
   private readonly DELETE_THRESHOLD = 50;
 
+  /** Double-tap detection for touch devices */
+  private lastTapTime = 0;
+  private readonly DOUBLE_TAP_DELAY = 300;
+
+  /** ID of the most recently added stop (for animation) */
+  recentlyAddedStopId = signal<string | null>(null);
+
   /** Current hover position (percentage 0-100), null when not hovering */
   hoverPosition = signal<number | null>(null);
 
@@ -103,20 +109,48 @@ export class ColorStopsHolderComponent implements AfterViewInit, OnDestroy {
     document.removeEventListener('touchend', this.boundTouchEnd);
   }
 
-  onContainerClick(event: MouseEvent): void {
+  onContainerDblClick(event: MouseEvent): void {
     if (this.disabled() || !this.canAddStop()) return;
     
     // Don't add if clicked on a stop
     const target = event.target as HTMLElement;
     if (target.closest('ngx-color-stop')) return;
 
+    this.addStopAtPosition(event.clientX);
+  }
+
+  onContainerTouchEnd(event: TouchEvent): void {
+    if (this.disabled() || !this.canAddStop()) return;
+    if (this.draggingStop()) return;
+
+    const target = event.target as HTMLElement;
+    if (target.closest('ngx-color-stop')) return;
+
+    const now = Date.now();
+    if (now - this.lastTapTime < this.DOUBLE_TAP_DELAY) {
+      // Double tap detected
+      const touch = event.changedTouches[0];
+      if (touch) {
+        this.addStopAtPosition(touch.clientX);
+      }
+      this.lastTapTime = 0;
+    } else {
+      this.lastTapTime = now;
+    }
+  }
+
+  private addStopAtPosition(clientX: number): void {
     const container = this.stopsContainer();
     if (!container) return;
     
     const rect = container.nativeElement.getBoundingClientRect();
-    const offset = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+    const offset = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
     const newColor = this.interpolateColorAtOffset(offset);
     const newStop = createColorStop(offset, newColor);
+    
+    // Track for animation
+    this.recentlyAddedStopId.set(newStop.id);
+    setTimeout(() => this.recentlyAddedStopId.set(null), 400);
     
     const newPalette = [...this.palette(), newStop];
     this.paletteChange.emit(newPalette);

@@ -7,18 +7,23 @@ body {
   padding: 0;
 }
 
-.github-link {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  color: #1a1a2e;
-  opacity: 0.7;
-  transition: opacity 0.2s, transform 0.2s;
-  z-index: 100;
+// GitHub Corner - Animated octocat
+.github-corner:hover .octo-arm {
+  animation: octocat-wave 560ms ease-in-out;
+}
 
-  &:hover {
-    opacity: 1;
-    transform: scale(1.1);
+@keyframes octocat-wave {
+  0%, 100% { transform: rotate(0); }
+  20%, 60% { transform: rotate(-25deg); }
+  40%, 80% { transform: rotate(10deg); }
+}
+
+@media (max-width: 500px) {
+  .github-corner:hover .octo-arm {
+    animation: none;
+  }
+  .github-corner .octo-arm {
+    animation: octocat-wave 560ms ease-in-out;
   }
 }
 
@@ -99,7 +104,13 @@ body {
 .picker-wrapper {
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-bottom: 24px;
+
+  ngx-gradient-picker {
+    width: 100%;
+    max-width: 600px;
+  }
 }
 
 .output-section {
@@ -334,17 +345,506 @@ body {
   }
 }
 
-// Responsive
-@media (max-width: 600px) {
+// Responsive - Tablet
+@media (max-width: 768px) {
+  .demo-container {
+    padding: 24px 16px;
+  }
+
   .demo-header h1 {
-    font-size: 1.8rem;
+    font-size: 2rem;
+  }
+
+  .demo-header p {
+    font-size: 1rem;
   }
 
   .demo-section {
-    padding: 24px 16px;
+    padding: 20px 16px;
+    border-radius: 12px;
+  }
+
+  .picker-wrapper {
+    padding: 0;
+  }
+
+  .popover-demo {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .popover-label {
+    display: none;
+  }
+
+  .api-table {
+    font-size: 12px;
+
+    th, td {
+      padding: 8px 6px;
+    }
+  }
+}
+
+// Responsive - Mobile
+@media (max-width: 480px) {
+  .demo-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .demo-section {
+    padding: 16px 12px;
+  }
+
+  .demo-section h2 {
+    font-size: 1.25rem;
+  }
+
+  .hint {
+    font-size: 13px;
+    padding: 10px 12px;
   }
 
   .features ul {
     grid-template-columns: 1fr;
+  }
+
+  .code-block pre {
+    padding: 12px;
+
+    code {
+      font-size: 11px;
+    }
+  }
+
+  .css-output {
+    font-size: 11px;
+    padding: 12px;
+  }
+
+  .preview-box {
+    height: 100px;
+    font-size: 1rem;
+  }
+
+  .badges {
+    gap: 4px;
+
+    img {
+      height: 18px;
+    }
+  }
+
+  .github-link {
+    top: 12px;
+    right: 12px;
+
+    svg {
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  .auto-detect-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .css-classes-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+// Auto-detection section
+.auto-detect {
+  .auto-detect-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .auto-detect-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+
+      .card-preview-hint {
+        opacity: 1;
+      }
+    }
+
+    &:focus {
+      outline: 2px solid #667eea;
+      outline-offset: 2px;
+    }
+
+    .card-preview {
+      height: 60px;
+      border-radius: 0;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-preview-hint {
+      opacity: 0;
+      transition: opacity 0.2s;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .card-content {
+      padding: 16px;
+
+      h4 {
+        margin: 0 0 4px;
+        font-size: 1rem;
+        color: #1a1a2e;
+      }
+
+      .card-description {
+        font-size: 12px;
+        color: #888;
+        margin: 0 0 8px;
+      }
+
+      .card-input {
+        display: block;
+        font-family: 'Fira Code', 'Consolas', monospace;
+        font-size: 10px;
+        background: #1a1a2e;
+        color: #4ecdc4;
+        padding: 8px;
+        border-radius: 4px;
+        overflow-x: auto;
+        white-space: nowrap;
+        margin-bottom: 8px;
+      }
+
+      .card-result {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+
+        .result-badge {
+          font-size: 10px;
+          padding: 3px 8px;
+          border-radius: 4px;
+          font-weight: 500;
+
+          &.type {
+            background: #e0e7ff;
+            color: #4338ca;
+          }
+
+          &.angle {
+            background: #d1fae5;
+            color: #065f46;
+          }
+
+          &.stops {
+            background: #fef3c7;
+            color: #92400e;
+          }
+        }
+      }
+    }
+  }
+
+  // Auto-detect dialog
+  .auto-detect-dialog-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  .auto-detect-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+    width: 90%;
+    max-width: 450px;
+    animation: slideIn 0.3s ease-out;
+
+    .dialog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid #eee;
+
+      h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: #1a1a2e;
+      }
+
+      .dialog-close {
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #999;
+        cursor: pointer;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s, color 0.2s;
+
+        &:hover {
+          background: #f0f0f0;
+          color: #333;
+        }
+      }
+    }
+
+    .dialog-body {
+      padding: 20px;
+    }
+
+    .dialog-footer {
+      padding: 16px 20px;
+      border-top: 1px solid #eee;
+      background: #f8f9fa;
+      border-radius: 0 0 16px 16px;
+
+      .dialog-output {
+        display: block;
+        font-family: 'Fira Code', 'Consolas', monospace;
+        font-size: 11px;
+        background: #1a1a2e;
+        color: #4ecdc4;
+        padding: 12px;
+        border-radius: 8px;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -48%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+  }
+}
+
+// CSS Customization section
+.css-customization {
+  .css-classes-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .css-class-item {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    code {
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 12px;
+      color: #e83e8c;
+      background: #fff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid #eee;
+      display: inline-block;
+      width: fit-content;
+    }
+
+    span {
+      font-size: 12px;
+      color: #666;
+    }
+  }
+}
+
+// Reactive Forms Demo Section
+.reactive-forms-demo {
+  .reactive-forms-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .form-side {
+    h3 {
+      margin: 0 0 16px;
+      color: #1a1a2e;
+    }
+  }
+
+  .theme-form {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+
+    .form-field {
+      margin-bottom: 16px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      label {
+        display: block;
+        font-size: 13px;
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 8px;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border-color 0.2s, box-shadow 0.2s;
+
+        &:focus {
+          outline: none;
+          border-color: #667eea;
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+      }
+    }
+  }
+
+  .live-preview-card {
+    height: 80px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    position: relative;
+
+    .preview-label {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      color: #1a1a2e;
+      font-size: 14px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .values-side {
+    h3 {
+      margin: 0 0 16px;
+      color: #1a1a2e;
+    }
+  }
+
+  .values-panel {
+    background: #1a1a2e;
+    border-radius: 12px;
+    padding: 16px;
+    height: calc(100% - 40px);
+    overflow: auto;
+  }
+
+  .value-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    &:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .value-label {
+      font-size: 11px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .value-content {
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 12px;
+      color: #4ecdc4;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 8px;
+      border-radius: 6px;
+      word-break: break-all;
+
+      &.stops-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        background: transparent;
+        padding: 0;
+      }
+
+      &.css-output {
+        color: #feca57;
+        font-size: 11px;
+      }
+    }
+
+    .stop-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 40px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #fff;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
   }
 }

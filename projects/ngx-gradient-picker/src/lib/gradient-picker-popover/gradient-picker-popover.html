@@ -12,7 +12,17 @@
 
   <!-- Popover content -->
   @if (isOpen()) {
-    <div class="popover-content" [class]="'position-' + position()">
+    <!-- Backdrop for bottom-sheet mode -->
+    @if (effectivePosition() === 'bottom-sheet') {
+      <div class="popover-backdrop" (click)="close()"></div>
+    }
+    <div class="popover-content" [class]="'position-' + effectivePosition()">
+      <!-- Close handle for bottom-sheet -->
+      @if (effectivePosition() === 'bottom-sheet') {
+        <div class="bottom-sheet-handle" (click)="close()">
+          <span class="handle-bar"></span>
+        </div>
+      }
       <ngx-gradient-picker
         #picker
         [(palette)]="palette"

@@ -4,13 +4,12 @@ import {
   computed,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ColorStop, sortStopsByOffset } from '../models/gradient.models';
 
 @Component({
   selector: 'ngx-palette',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './palette.html',
   styleUrl: './palette.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

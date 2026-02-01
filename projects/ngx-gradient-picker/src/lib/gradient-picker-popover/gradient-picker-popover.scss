@@ -80,3 +80,85 @@
     transform: translateY(0);
   }
 }
+
+// Bottom sheet mode - fixed at bottom of viewport
+.popover-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+  animation: fadeInBackdrop 0.2s ease;
+}
+
+@keyframes fadeInBackdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.popover-content.position-bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: #fff;
+  border-radius: 16px 16px 0 0;
+  padding: 0 16px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  max-height: 80vh;
+  overflow-y: auto; // Allow scrolling for content
+  overflow-x: hidden;
+
+  // Safe area for devices with home indicator + extra space for drag-to-delete
+  padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+  
+  // Remove inner container styling for cleaner look
+  ::ng-deep .gradient-picker-container {
+    box-shadow: none;
+    padding: 12px 0;
+    border-radius: 0;
+    background: transparent;
+    overflow: visible; // Allow stops to show properly
+  }
+  
+  // Ensure picker body allows stops to overflow
+  ::ng-deep .gradient-picker-body {
+    overflow: visible;
+    margin-bottom: 20px; // Extra space for stops
+  }
+  
+  // Ensure picker takes full width without overflow
+  ::ng-deep ngx-gradient-picker {
+    width: 100%;
+    min-width: 0; // Override min-width constraint
+  }
+  
+  ::ng-deep :host.ngx-gradient-picker {
+    min-width: 0;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.bottom-sheet-handle {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
+  .handle-bar {
+    width: 36px;
+    height: 4px;
+    background: #ddd;
+    border-radius: 2px;
+  }
+}

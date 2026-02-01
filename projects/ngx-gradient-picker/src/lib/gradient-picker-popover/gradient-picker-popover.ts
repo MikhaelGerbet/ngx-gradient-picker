@@ -9,9 +9,12 @@ import {
   inject,
   HostListener,
   ChangeDetectionStrategy,
-  viewChild
+  viewChild,
+  DestroyRef,
+  OnInit
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { fromEvent, debounceTime } from 'rxjs';
 import {
   ColorStop,
   GradientType,
@@ -22,10 +25,13 @@ import {
 } from '../models/gradient.models';
 import { GradientPickerComponent } from '../gradient-picker/gradient-picker';
 
+/** Popover position type - 'auto' detects mobile/desktop automatically */
+export type PopoverPosition = 'top' | 'bottom' | 'left' | 'right' | 'bottom-sheet' | 'auto';
+
 @Component({
   selector: 'ngx-gradient-picker-popover',
   standalone: true,
-  imports: [CommonModule, GradientPickerComponent],
+  imports: [GradientPickerComponent],
   templateUrl: './gradient-picker-popover.html',
   styleUrl: './gradient-picker-popover.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,8 +39,9 @@ import { GradientPickerComponent } from '../gradient-picker/gradient-picker';
     'class': 'ngx-gradient-picker-popover'
   }
 })
-export class GradientPickerPopoverComponent {
+export class GradientPickerPopoverComponent implements OnInit {
   private elementRef = inject(ElementRef);
+  private destroyRef = inject(DestroyRef);
 
   /** The color stops palette */
   palette = model<ColorStop[]>(DEFAULT_PALETTE);
@@ -69,8 +76,13 @@ export class GradientPickerPopoverComponent {
   /** Whether the picker is disabled */
   disabled = input<boolean>(false);
   
-  /** Popover position */
-  position = input<'top' | 'bottom' | 'left' | 'right'>('bottom');
+  /** 
+   * Popover position
+   * - 'auto': Automatically detects device (mobile → bottom-sheet, desktop → bottom popover)
+   * - 'top' | 'bottom' | 'left' | 'right': Force popover mode at specified position
+   * - 'bottom-sheet': Force bottom-sheet mode (full-width modal from bottom)
+   */
+  position = input<PopoverPosition>('auto');
   
   /** Close on outside click */
   closeOnOutsideClick = input<boolean>(true);
@@ -86,6 +98,16 @@ export class GradientPickerPopoverComponent {
 
   /** Popover open state */
   isOpen = signal(false);
+  
+  /** Detected mobile state (reactive to resize/orientation) */
+  private isMobile = signal(false);
+  
+  /** Effective position computed from 'auto' detection or explicit value */
+  effectivePosition = computed(() => {
+    const pos = this.position();
+    if (pos !== 'auto') return pos;
+    return this.isMobile() ? 'bottom-sheet' : 'bottom';
+  });
 
   /** Computed CSS gradient for trigger preview */
   triggerGradientCSS = computed(() => {
@@ -95,6 +117,35 @@ export class GradientPickerPopoverComponent {
       stops: this.palette()
     });
   });
+
+  ngOnInit(): void {
+    this.checkMobileDevice();
+    
+    // Listen for resize/orientation changes to update mobile detection
+    if (typeof window !== 'undefined') {
+      fromEvent(window, 'resize').pipe(
+        debounceTime(100),
+        takeUntilDestroyed(this.destroyRef)
+      ).subscribe(() => this.checkMobileDevice());
+    }
+  }
+  
+  /**
+   * Check if the current device is mobile (touch device or small screen)
+   */
+  private checkMobileDevice(): void {
+    if (typeof window === 'undefined') {
+      this.isMobile.set(false);
+      return;
+    }
+    
+    // Detect touch-only devices (no hover capability)
+    const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+    // Detect small screens (< 640px width)
+    const isSmallScreen = window.innerWidth < 640;
+    
+    this.isMobile.set(isTouchDevice || isSmallScreen);
+  }
 
   toggle(): void {
     if (this.disabled()) return;

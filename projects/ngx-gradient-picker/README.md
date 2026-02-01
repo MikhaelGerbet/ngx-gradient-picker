@@ -11,10 +11,22 @@ A modern Angular gradient picker component with draggable color stops, circular 
 **[📺 Live Demo](https://mikhaelgerbet.github.io/ngx-gradient-picker/)**
 
 <p align="center">
-  <img src="docs/images/preview.png" alt="ngx-gradient-picker preview" width="600">
+  <img src="https://raw.githubusercontent.com/MikhaelGerbet/ngx-gradient-picker/main/docs/images/preview.png" alt="ngx-gradient-picker preview" width="600">
 </p>
 
-##  Features
+<p align="center">
+  <em>Desktop popover mode</em>
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/MikhaelGerbet/ngx-gradient-picker/main/docs/images/preview-mobile.png" alt="Mobile bottom-sheet mode" width="300">
+</p>
+
+<p align="center">
+  <em>Mobile bottom-sheet mode (auto-detected)</em>
+</p>
+
+## ✨ Features
 
 -  **Draggable color stops** with smooth animations
 -  **Click to add** new stops on the gradient bar
@@ -22,12 +34,14 @@ A modern Angular gradient picker component with draggable color stops, circular 
 -  **Double-click** to open native color picker
 -  **Single stop = solid color** - one stop automatically becomes a solid color
 -  **Circular angle picker** for linear gradients
--  **Linear & Radial** gradient support
+-  **6 gradient types**: Linear, Radial, Conic, Repeating-Linear, Repeating-Radial, Repeating-Conic
+-  **CSS parsing** - auto-detect gradient type, angle, and stops from CSS
+-  **Mobile-friendly** - bottom-sheet mode for popover, touch-optimized
 -  **Angular Signals** for optimal performance
 -  **Standalone components** - no module needed
 -  **Two-way binding** with `[(palette)]`, `[(angle)]`, `[(type)]`
 -  **Works with Reactive Forms**
--  **Fully customizable** dimensions
+-  **Fully customizable** dimensions and CSS
 -  **🚫 Zero external dependencies** - only Angular core
 
 ##  Installation
@@ -76,13 +90,25 @@ export class ExampleComponent {
     createColorStop(1, '#45b7d1')
   ]);
   angle = signal(90);
-  type = signal<'linear' | 'radial'>('linear');
+  type = signal<GradientType>('linear');
 }
+```
+
+### GradientType
+
+```typescript
+type GradientType = 
+  | 'linear' 
+  | 'radial' 
+  | 'conic'
+  | 'repeating-linear'
+  | 'repeating-radial'
+  | 'repeating-conic';
 ```
 
 ### Popover Mode
 
-Perfect for forms and compact UIs:
+Perfect for forms and compact UIs. **By default, the picker automatically adapts to the device**:
 
 ```typescript
 import { GradientPickerPopoverComponent } from 'ngx-gradient-picker';
@@ -90,12 +116,45 @@ import { GradientPickerPopoverComponent } from 'ngx-gradient-picker';
 @Component({
   imports: [GradientPickerPopoverComponent],
   template: `
+    <!-- Auto mode (default): mobile = bottom-sheet, desktop = popover -->
     <ngx-gradient-picker-popover
       [(palette)]="palette"
-      [(angle)]="angle"
-      [position]="'bottom'"/>
+      [(angle)]="angle"/>
   `
 })
+```
+
+### Position Options
+
+| Position | Behavior |
+|----------|----------|
+| `'auto'` (default) | **Auto-detects device**: mobile/touch → bottom-sheet, desktop → popover |
+| `'bottom'` / `'top'` / `'left'` / `'right'` | Force popover at specified position |
+| `'bottom-sheet'` | Force bottom-sheet mode (full-width modal) |
+
+```html
+<!-- Force popover mode even on mobile -->
+<ngx-gradient-picker-popover [position]="'bottom'"/>
+
+<!-- Force bottom-sheet even on desktop -->
+<ngx-gradient-picker-popover [position]="'bottom-sheet'"/>
+```
+
+### CSS Auto-Detection
+
+Parse any CSS gradient string and extract its type, angle, and color stops:
+
+```typescript
+import { parseGradientCSS } from 'ngx-gradient-picker';
+
+const css = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+const config = parseGradientCSS(css);
+// config = { type: 'linear', angle: 135, stops: [...] }
+
+// Then apply to your picker:
+palette.set(config.stops);
+angle.set(config.angle);
+type.set(config.type);
 ```
 
 ### Get CSS Output
@@ -177,11 +236,11 @@ The component implements `ControlValueAccessor` - the form value is the CSS grad
 |--------------|------|---------|-------------|
 | `[(palette)]` | `ColorStop[]` | `[]` | Two-way binding for color stops |
 | `[(angle)]` | `number` | `90` | Gradient angle (0-360 deg) |
-| `[(type)]` | `'linear' \| 'radial'` | `'linear'` | Gradient type |
+| `[(type)]` | `GradientType` | `'linear'` | Gradient type (see types above) |
 | `[width]` | `number` | `300` | Picker width in pixels |
 | `[paletteHeight]` | `number` | `24` | Gradient bar height |
 | `[minStops]` | `number` | `1` | Minimum color stops (1 allows solid colors) |
-| `[maxStops]` | `number` | `10` | Maximum color stops |
+| `[maxStops]` | `number` | `50` | Maximum color stops |
 | `(stopSelect)` | `EventEmitter<ColorStop>` | - | Emitted when a stop is selected |
 | `formControlName` | `string` | - | Binds CSS output to form control |
 
@@ -192,7 +251,11 @@ The component implements `ControlValueAccessor` - the form value is the CSS grad
 | `[(palette)]` | `ColorStop[]` | `[]` | Two-way binding for color stops |
 | `[(angle)]` | `number` | `90` | Gradient angle |
 | `[width]` | `number` | `300` | Picker width |
-| `[position]` | `'top' \| 'bottom' \| 'left' \| 'right'` | `'bottom'` | Popover position |
+| `[position]` | `PopoverPosition` | `'auto'` | Position mode (see table above) |
+
+```typescript
+type PopoverPosition = 'top' | 'bottom' | 'left' | 'right' | 'bottom-sheet' | 'auto';
+```
 
 ### ColorStop Interface
 
@@ -211,6 +274,7 @@ interface ColorStop {
 import { 
   createColorStop, 
   paletteToCSS,
+  parseGradientCSS,
   generateStopId,
   sortStopsByOffset,
   generateGradientCSS
@@ -223,6 +287,10 @@ const stop = createColorStop(0.5, '#ff0000');
 // Generate CSS from palette
 const css = paletteToCSS(palette, 90, 'linear');
 // 'linear-gradient(90deg, #ff0000 0%, #00ff00 100%)'
+
+// Parse CSS to get gradient config (auto-detection)
+const config = parseGradientCSS('linear-gradient(45deg, #ff6b6b 0%, #4ecdc4 100%)');
+// { type: 'linear', angle: 45, stops: [...] }
 ```
 
 ## 🎨 Solid Color Support
@@ -253,13 +321,65 @@ This is enabled by default (`minStops="1"`). To enforce at least 2 stops (gradie
 | **Drag** a stop down | Delete the stop (if > minStops) |
 | **Double-click** a stop | Open native color picker |
 | **Drag** angle picker | Change gradient angle |
-| **Click** Linear/Radial | Toggle gradient type |
+| **Click** type button | Cycle between linear/radial/conic |
+| **Click** repeat button | Toggle repeating mode |
+
+## 🎨 CSS Customization
+
+Override these CSS classes to customize the appearance:
+
+| Class | Description |
+|-------|-------------|
+| `.gradient-picker-container` | Main wrapper with background, padding, border-radius |
+| `.gradient-picker-header` | Header containing type picker and angle picker |
+| `.gradient-picker-body` | Body containing palette and color stops |
+| `.color-stop-marker` | The circular color stop marker |
+| `.palette-svg` | The gradient preview bar |
+| `.angle-picker-container` | Container for the angle dial |
+| `.dial` | The circular dial element |
+| `.type-picker-container` | Container for type toggle buttons |
+| `.type-toggle` | Type toggle button (linear/radial/conic) |
+| `.repeat-toggle` | Repeat mode toggle button |
+| `.popover-trigger` | The button that opens the popover |
+| `.popover-content` | The popover container |
+| `.popover-backdrop` | Backdrop overlay (bottom-sheet mode) |
+
+Example customization:
+
+```scss
+::ng-deep .gradient-picker-container {
+  background: #1a1a2e;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+::ng-deep .color-stop-marker {
+  width: 20px;
+  height: 20px;
+  border-width: 3px;
+}
+```
 
 ##  Angular Compatibility
 
 | ngx-gradient-picker | Angular |
 |---------------------|---------|
 | 1.x | 17.x, 18.x, 19.x, 20.x |
+
+## 📦 Bundle Size
+
+| Metric | Size |
+|--------|------|
+| FESM Bundle (unminified) | ~99 KB |
+| Gzipped (estimated) | ~16 KB |
+
+> **Note on npm publishing best practices**: Angular libraries are published **unminified** to npm. This is intentional because:
+> - The consuming application's bundler (webpack, esbuild, vite) handles tree-shaking to remove unused code
+> - The bundler's minifier optimizes all code together for better compression
+> - Source maps remain accurate for debugging
+> - Consumer build tools can apply their own optimizations
+>
+> The final impact on your app will depend on which components you import and your bundler's optimization settings.
 
 ##  Demo
 

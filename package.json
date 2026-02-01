@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve demo",
+     "start": "ng serve demo --watch --configuration",
     "dev": "concurrently \"ng build ngx-gradient-picker --watch\" \"ng serve demo --port 4200\"",
     "build": "ng build ngx-gradient-picker",
     "build:demo": "ng build demo",
@@ -25,6 +25,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/animations": "^20.3.16",
     "@angular/common": "^20.3.0",
     "@angular/compiler": "^20.3.0",
     "@angular/core": "^20.3.0",

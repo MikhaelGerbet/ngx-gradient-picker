@@ -9,7 +9,6 @@ import {
   ChangeDetectionStrategy,
   forwardRef
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import {
   ColorStop,
@@ -29,7 +28,6 @@ import { GradientTypePickerComponent } from '../gradient-type-picker/gradient-ty
   selector: 'ngx-gradient-picker',
   standalone: true,
   imports: [
-    CommonModule,
     PaletteComponent,
     ColorStopsHolderComponent,
     AnglePickerComponent,
@@ -65,16 +63,25 @@ export class GradientPickerComponent implements ControlValueAccessor {
   minStops = input<number>(1);
   
   /** Maximum number of color stops */
-  maxStops = input<number>(5);
+  maxStops = input<number>(50);
   
   /** Layout direction */
   direction = input<GradientDirection>('horizontal');
   
-  /** Gradient type (linear/radial) */
+  /** Gradient type (linear/radial/conic/repeating-*) */
   type = model<GradientType>('linear');
   
-  /** Gradient angle (for linear gradients) */
+  /** Gradient angle (for linear and conic gradients) */
   angle = model<number>(90);
+  
+  /** 
+   * Size of repeating pattern (1-100%). Only applies to repeating-* types.
+   * E.g., 25 means the pattern repeats 4 times.
+   */
+  repeatSize = model<number>(100);
+
+  /** Is currently dragging the repeat marker */
+  isRepeatDragging = signal(false);
   
   /** Whether to show the angle picker */
   showAnglePicker = input<boolean>(true);
@@ -94,11 +101,15 @@ export class GradientPickerComponent implements ControlValueAccessor {
   /** Computed: whether a stop is selected */
   hasSelectedStop = computed(() => this.selectedStop() !== null);
 
+  /** Computed: whether the current type is repeating */
+  isRepeating = computed(() => this.type().startsWith('repeating-'));
+
   /** Computed: the current gradient configuration */
   gradientConfig = computed<GradientConfig>(() => ({
     type: this.type(),
     angle: this.angle(),
-    stops: this.palette()
+    stops: this.palette(),
+    repeatSize: this.repeatSize()
   }));
 
   /** Computed: CSS gradient string for preview */
@@ -172,6 +183,42 @@ export class GradientPickerComponent implements ControlValueAccessor {
     return this.gradientConfig();
   }
 
+  /**
+   * Get the opacity of the currently selected stop as percentage (0-100)
+   */
+  getSelectedStopOpacity(): number {
+    const selected = this.selectedStop();
+    return selected ? Math.round((selected.opacity ?? 1) * 100) : 100;
+  }
+
+  /**
+   * Get the background gradient for the opacity slider
+   */
+  getOpacitySliderBg(): string {
+    const selected = this.selectedStop();
+    if (!selected) return 'transparent';
+    const color = selected.color;
+    return `linear-gradient(to right, transparent, ${color})`;
+  }
+
+  /**
+   * Handle opacity slider change
+   */
+  onOpacityChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const opacity = parseInt(input.value, 10) / 100;
+    this.updateSelectedStopOpacity(opacity);
+    
+    // Update selected stop reference with new opacity
+    const selected = this.selectedStop();
+    if (selected) {
+      const updated = this.palette().find(s => s.id === selected.id);
+      if (updated) {
+        this.selectedStop.set(updated);
+      }
+    }
+  }
+
   // ControlValueAccessor implementation
   private onChange: (value: string) => void = () => {};
   private onTouched: () => void = () => {};
@@ -200,5 +247,87 @@ export class GradientPickerComponent implements ControlValueAccessor {
   setDisabledState(isDisabled: boolean): void {
     // disabled is an input, can't set it directly
     // but the form will handle disabled state
+  }
+
+  // Repeat marker drag handling
+  private repeatMarkerContainer: HTMLElement | null = null;
+  private boundRepeatMouseMove = this.onRepeatMouseMove.bind(this);
+  private boundRepeatMouseUp = this.onRepeatMouseUp.bind(this);
+  private boundRepeatTouchMove = this.onRepeatTouchMove.bind(this);
+  private boundRepeatTouchEnd = this.onRepeatTouchEnd.bind(this);
+
+  onRepeatMarkerMouseDown(event: MouseEvent): void {
+    if (this.disabled()) return;
+    event.preventDefault();
+    event.stopPropagation();
+    
+    this.repeatMarkerContainer = (event.currentTarget as HTMLElement).closest('.gradient-picker-body');
+    this.isRepeatDragging.set(true);
+    this.updateRepeatFromEvent(event);
+    this.addRepeatListeners();
+  }
+
+  onRepeatMarkerTouchStart(event: TouchEvent): void {
+    if (this.disabled()) return;
+    event.preventDefault();
+    event.stopPropagation();
+    
+    this.repeatMarkerContainer = (event.currentTarget as HTMLElement).closest('.gradient-picker-body');
+    this.isRepeatDragging.set(true);
+    this.updateRepeatFromTouch(event);
+    this.addRepeatListeners();
+  }
+
+  private onRepeatMouseMove(event: MouseEvent): void {
+    if (!this.isRepeatDragging()) return;
+    event.preventDefault();
+    this.updateRepeatFromEvent(event);
+  }
+
+  private onRepeatMouseUp(): void {
+    this.isRepeatDragging.set(false);
+    this.removeRepeatListeners();
+  }
+
+  private onRepeatTouchMove(event: TouchEvent): void {
+    if (!this.isRepeatDragging()) return;
+    event.preventDefault();
+    this.updateRepeatFromTouch(event);
+  }
+
+  private onRepeatTouchEnd(): void {
+    this.isRepeatDragging.set(false);
+    this.removeRepeatListeners();
+  }
+
+  private updateRepeatFromEvent(event: MouseEvent): void {
+    if (!this.repeatMarkerContainer) return;
+    const rect = this.repeatMarkerContainer.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const percentage = Math.round((x / rect.width) * 100);
+    this.repeatSize.set(Math.max(5, Math.min(100, percentage)));
+  }
+
+  private updateRepeatFromTouch(event: TouchEvent): void {
+    if (!this.repeatMarkerContainer || event.touches.length === 0) return;
+    const touch = event.touches[0];
+    const rect = this.repeatMarkerContainer.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+    const percentage = Math.round((x / rect.width) * 100);
+    this.repeatSize.set(Math.max(5, Math.min(100, percentage)));
+  }
+
+  private addRepeatListeners(): void {
+    document.addEventListener('mousemove', this.boundRepeatMouseMove);
+    document.addEventListener('mouseup', this.boundRepeatMouseUp);
+    document.addEventListener('touchmove', this.boundRepeatTouchMove, { passive: false });
+    document.addEventListener('touchend', this.boundRepeatTouchEnd);
+  }
+
+  private removeRepeatListeners(): void {
+    document.removeEventListener('mousemove', this.boundRepeatMouseMove);
+    document.removeEventListener('mouseup', this.boundRepeatMouseUp);
+    document.removeEventListener('touchmove', this.boundRepeatTouchMove);
+    document.removeEventListener('touchend', this.boundRepeatTouchEnd);
   }
 }

@@ -5,6 +5,7 @@
   left: 0;
   right: 0;
   bottom: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .stops-container {
@@ -14,21 +15,39 @@
   right: 0;
   bottom: 0;
   cursor: default;
+  touch-action: pan-y; // Allow vertical scroll but handle horizontal
 
   &.can-add {
     cursor: copy;
   }
 }
 
-.playhead {
+// Ghost stop preview (shows where a new stop will be added)
+.ghost-stop {
   position: absolute;
-  top: 0;
   bottom: 0;
-  width: 3px;
-  background: #fff;
-  border-radius: 1.5px;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.8);
+  background: rgba(128, 128, 128, 0.4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   pointer-events: none;
   z-index: 0;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
+  opacity: 0.7;
+}
+
+// Hide ghost stop on touch devices (not useful without hover)
+@media (hover: none) and (pointer: coarse) {
+  .ghost-stop {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .ghost-stop {
+    width: 20px;
+    height: 20px;
+  }
 }

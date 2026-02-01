@@ -13,18 +13,7 @@
         <div class="pointer-tip"></div>
       </div>
     </div>
+    <!-- Tooltip showing degrees during drag -->
+    <span class="angle-tooltip" [class.visible]="isDragging()">{{ angle() }}°</span>
   </div>
-  
-  @if (showValue()) {
-    <div class="angle-value">
-      <input 
-        type="number" 
-        [value]="angle()"
-        [disabled]="disabled()"
-        (input)="onInputChange($any($event.target).value)"
-        min="0"
-        max="360"
-        class="angle-input"/>
-    </div>
-  }
 </div>

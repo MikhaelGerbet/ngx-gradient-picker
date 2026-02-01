@@ -5,6 +5,9 @@
 // Models and utilities
 export * from './lib/models/gradient.models';
 
+// Directives
+export * from './lib/directives/click-outside.directive';
+
 // Components
 export * from './lib/gradient-picker/gradient-picker';
 export * from './lib/gradient-picker-popover/gradient-picker-popover';

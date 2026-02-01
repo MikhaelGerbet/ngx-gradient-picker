@@ -9,13 +9,12 @@ import {
   viewChild,
   ElementRef
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ColorStop } from '../models/gradient.models';
 
 @Component({
   selector: 'ngx-color-stop',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './color-stop.html',
   styleUrl: './color-stop.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,6 +22,7 @@ import { ColorStop } from '../models/gradient.models';
     'class': 'ngx-color-stop',
     '[class.dragging]': 'isDragging()',
     '[class.deleting]': 'isBeingDeleted()',
+    '[class.new]': 'isNew()',
     '[style.left.%]': 'positionPercent()',
     '(mousedown)': 'onMouseDown($event)',
     '(touchstart)': 'onTouchStart($event)'
@@ -40,6 +40,9 @@ export class ColorStopComponent {
 
   /** Whether this stop is being deleted (dragged to delete zone) */
   isBeingDeleted = input<boolean>(false);
+
+  /** Whether this stop was just added (for animation) */
+  isNew = input<boolean>(false);
 
   /** Emits when the stop is selected */
   stopSelect = output<ColorStop>();

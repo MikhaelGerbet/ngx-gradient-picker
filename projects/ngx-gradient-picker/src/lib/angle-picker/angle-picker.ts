@@ -1,23 +1,17 @@
 import {
   Component,
   input,
-  output,
   signal,
   computed,
-  ElementRef,
-  inject,
   ChangeDetectionStrategy,
   OnDestroy,
-  viewChild,
   model
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'ngx-angle-picker',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [],
   templateUrl: './angle-picker.html',
   styleUrl: './angle-picker.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,12 +28,6 @@ export class AnglePickerComponent implements OnDestroy {
   
   /** Whether the picker is disabled */
   disabled = input<boolean>(false);
-  
-  /** Show the angle value as text */
-  showValue = input<boolean>(true);
-
-  /** Reference to the dial element */
-  dial = viewChild<ElementRef>('dial');
 
   /** Is currently dragging */
   isDragging = signal(false);
@@ -75,13 +63,6 @@ export class AnglePickerComponent implements OnDestroy {
     this.isDragging.set(true);
     this.updateAngleFromTouch(event);
     this.addGlobalListeners();
-  }
-
-  onInputChange(value: string): void {
-    const numValue = parseInt(value, 10);
-    if (!isNaN(numValue)) {
-      this.angle.set(((numValue % 360) + 360) % 360);
-    }
   }
 
   private onMouseMove(event: MouseEvent): void {
@@ -138,6 +119,16 @@ export class AnglePickerComponent implements OnDestroy {
     
     // Adjust so 0 is at top and increases clockwise
     angle = (angle + 90 + 360) % 360;
+    
+    // Snap to common angles (0, 45, 90, 135, 180, 225, 270, 315) with 5° tolerance
+    const snapAngles = [0, 45, 90, 135, 180, 225, 270, 315, 360];
+    const snapTolerance = 5;
+    
+    for (const snapAngle of snapAngles) {
+      if (Math.abs(angle - snapAngle) <= snapTolerance) {
+        return snapAngle === 360 ? 0 : snapAngle;
+      }
+    }
     
     return Math.round(angle);
   }

@@ -1,4 +1,4 @@
-<div class="gradient-picker-container" [style.width.px]="width()">
+<div class="gradient-picker-container">
   <!-- Header with controls -->
   <div class="gradient-picker-header">
     @if (showTypePicker()) {
@@ -7,20 +7,34 @@
         [disabled]="disabled()"/>
     }
     
-    @if (showAnglePicker() && type() === 'linear') {
+    @if (showAnglePicker() && (type() === 'linear' || type() === 'conic' || type() === 'repeating-linear' || type() === 'repeating-conic')) {
       <ngx-angle-picker
         [(angle)]="angle"
         [disabled]="disabled()"
-        [size]="36"/>
+        [size]="28"/>
     }
   </div>
 
   <!-- Gradient preview and stops -->
   <div class="gradient-picker-body" [style.height.px]="paletteHeight()">
+    <!-- Repeat marker (visible only in repeating mode) - rendered first to be behind -->
+    @if (isRepeating()) {
+      <div 
+        class="repeat-marker"
+        [class.dragging]="isRepeatDragging()"
+        [style.left.%]="repeatSize()"
+        (mousedown)="onRepeatMarkerMouseDown($event)"
+        (touchstart)="onRepeatMarkerTouchStart($event)">
+        <div class="repeat-marker-line"></div>
+        <div class="repeat-marker-handle">
+          <span class="repeat-marker-tooltip">{{ repeatSize() }}%</span>
+        </div>
+      </div>
+    }
+    
     <!-- Palette preview -->
     <ngx-palette
       [palette]="palette()"
-      [width]="width()"
       [height]="paletteHeight()"/>
     
     <!-- Color stops overlay -->
@@ -28,8 +42,31 @@
       [palette]="palette()"
       [minStops]="minStops()"
       [maxStops]="maxStops()"
-      [disabled]="disabled()"
+      [disabled]="disabled() || isRepeatDragging()"
       (paletteChange)="onPaletteChange($event)"
       (stopSelect)="onStopSelect($event)"/>
   </div>
+
+  <!-- Opacity slider (shown when stop is selected) -->
+  @if (hasSelectedStop()) {
+    <div class="opacity-slider-container">
+      <label class="opacity-label">
+        <span class="opacity-icon">◐</span>
+        <span class="opacity-text">Opacity</span>
+      </label>
+      <div class="opacity-slider-wrapper">
+        <div class="opacity-slider-bg" [style.background]="getOpacitySliderBg()"></div>
+        <input 
+          type="range" 
+          class="opacity-slider"
+          min="0" 
+          max="100" 
+          step="1"
+          [value]="getSelectedStopOpacity()"
+          (input)="onOpacityChange($event)"
+          [disabled]="disabled()">
+      </div>
+      <span class="opacity-value">{{ getSelectedStopOpacity() }}%</span>
+    </div>
+  }
 </div>
