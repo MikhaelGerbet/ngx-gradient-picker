@@ -180,7 +180,7 @@ The component implements `ControlValueAccessor` - the form value is the CSS grad
 | `[(type)]` | `'linear' \| 'radial'` | `'linear'` | Gradient type |
 | `[width]` | `number` | `300` | Picker width in pixels |
 | `[paletteHeight]` | `number` | `24` | Gradient bar height |
-| `[minStops]` | `number` | `2` | Minimum color stops (set to 1 for solid colors) |
+| `[minStops]` | `number` | `1` | Minimum color stops (1 allows solid colors) |
 | `[maxStops]` | `number` | `10` | Maximum color stops |
 | `(stopSelect)` | `EventEmitter<ColorStop>` | - | Emitted when a stop is selected |
 | `formControlName` | `string` | - | Binds CSS output to form control |
@@ -236,12 +236,12 @@ const css = paletteToCSS(palette, 90, 'linear');
 // Returns: '#ff6b6b' (not 'linear-gradient(...)')
 ```
 
-To allow users to create solid colors, set `minStops` to `1`:
+This is enabled by default (`minStops="1"`). To enforce at least 2 stops (gradient only), set `minStops` to `2`:
 
 ```html
 <ngx-gradient-picker
   [(palette)]="palette"
-  [minStops]="1" />
+  [minStops]="2" />
 ```
 
 ##  User Interactions

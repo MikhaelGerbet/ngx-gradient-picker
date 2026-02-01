@@ -61,8 +61,8 @@ export class GradientPickerComponent implements ControlValueAccessor {
   /** Height of the palette bar */
   paletteHeight = input<number>(32);
   
-  /** Minimum number of color stops */
-  minStops = input<number>(2);
+  /** Minimum number of color stops (1 = allow solid colors) */
+  minStops = input<number>(1);
   
   /** Maximum number of color stops */
   maxStops = input<number>(5);

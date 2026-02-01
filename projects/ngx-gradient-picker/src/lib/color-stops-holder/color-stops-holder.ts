@@ -38,8 +38,8 @@ export class ColorStopsHolderComponent implements AfterViewInit, OnDestroy {
   /** Height of the holder (should match palette height) */
   height = input<number>(24);
   
-  /** Minimum number of stops */
-  minStops = input<number>(2);
+  /** Minimum number of stops (1 = allow solid colors) */
+  minStops = input<number>(1);
   
   /** Maximum number of stops */
   maxStops = input<number>(5);

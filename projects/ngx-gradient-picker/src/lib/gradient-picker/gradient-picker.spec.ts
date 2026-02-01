@@ -34,8 +34,8 @@ describe('GradientPickerComponent', () => {
     expect(component.paletteHeight()).toBe(32);
   });
 
-  it('should have default min stops of 2', () => {
-    expect(component.minStops()).toBe(2);
+  it('should have default min stops of 1 (allows solid colors)', () => {
+    expect(component.minStops()).toBe(1);
   });
 
   it('should have default max stops of 5', () => {
