@@ -1,0 +1,8 @@
+<div class="color-stop-marker" [style.background-color]="backgroundColor()"></div>
+<input 
+  #colorInput
+  type="color" 
+  class="color-input-hidden"
+  [value]="backgroundColor()"
+  (input)="onColorChange($event)"
+  (change)="onColorChange($event)">

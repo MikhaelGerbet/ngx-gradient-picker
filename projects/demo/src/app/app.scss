@@ -1,0 +1,335 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.demo-container {
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+  padding: 40px 20px;
+}
+
+.demo-header {
+  text-align: center;
+  margin-bottom: 48px;
+
+  h1 {
+    font-size: 2.5rem;
+    margin: 0 0 8px;
+    color: #1a1a2e;
+  }
+
+  p {
+    font-size: 1.1rem;
+    color: #666;
+    margin: 0 0 16px;
+  }
+
+  .badges {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+
+    img {
+      height: 20px;
+    }
+  }
+}
+
+.demo-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.demo-section {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+  h2 {
+    font-size: 1.5rem;
+    margin: 0 0 8px;
+    color: #1a1a2e;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    margin: 24px 0 12px;
+    color: #333;
+  }
+
+  > p {
+    color: #666;
+    margin: 0 0 24px;
+  }
+
+  .hint {
+    font-size: 14px;
+    background: #f0f7ff;
+    border-left: 3px solid #4ecdc4;
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 24px;
+  }
+}
+
+.picker-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.output-section {
+  margin-bottom: 24px;
+
+  h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #888;
+    margin: 0 0 8px;
+  }
+}
+
+.css-output {
+  display: block;
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 13px;
+  background: #1a1a2e;
+  color: #4ecdc4;
+  padding: 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+  word-break: break-all;
+}
+
+.preview-box {
+  height: 120px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.popover-demo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.popover-label {
+  color: #888;
+  font-size: 14px;
+}
+
+// Installation section
+.installation {
+  .code-block {
+    margin-bottom: 12px;
+  }
+}
+
+// Code blocks
+.code-block {
+  background: #1a1a2e;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 16px;
+
+  .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    span {
+      font-size: 12px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #888;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+    }
+  }
+
+  pre {
+    margin: 0;
+    padding: 16px;
+    overflow-x: auto;
+
+    code {
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #e4e8ec;
+      white-space: pre;
+    }
+  }
+}
+
+// Usage section
+.usage {
+  h3:first-of-type {
+    margin-top: 0;
+  }
+}
+
+// API section
+.api {
+  .api-table-wrapper {
+    overflow-x: auto;
+  }
+
+  .api-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background: #f8f9fa;
+      font-weight: 600;
+      color: #333;
+    }
+
+    td code {
+      background: #f0f0f0;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 12px;
+      color: #e91e63;
+    }
+  }
+}
+
+// Features section
+.features {
+  ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+  }
+}
+
+// Compatibility section
+.compatibility {
+  .compat-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background: #f8f9fa;
+      font-weight: 600;
+    }
+
+    td {
+      color: #666;
+    }
+  }
+}
+
+.demo-footer {
+  text-align: center;
+  margin-top: 48px;
+  color: #888;
+  font-size: 14px;
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 16px;
+
+    a {
+      color: #4ecdc4;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+
+      &:hover {
+        color: #45b7d1;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  p {
+    margin: 0 0 4px;
+
+    a {
+      color: #4ecdc4;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 600px) {
+  .demo-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .demo-section {
+    padding: 24px 16px;
+  }
+
+  .features ul {
+    grid-template-columns: 1fr;
+  }
+}

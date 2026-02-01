@@ -1,0 +1,46 @@
+:host {
+  display: block;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+.gradient-picker-container {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.gradient-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  min-height: 40px;
+}
+
+.gradient-picker-body {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.gradient-picker-color-picker {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+// Vertical layout
+:host.vertical {
+  .gradient-picker-container {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+// Horizontal layout (default)
+:host.horizontal {
+  .gradient-picker-header {
+    flex-direction: row;
+  }
+}

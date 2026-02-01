@@ -1,0 +1,82 @@
+:host {
+  display: inline-block;
+  position: relative;
+}
+
+.popover-container {
+  position: relative;
+  display: inline-block;
+}
+
+.popover-trigger {
+  width: 48px;
+  height: 32px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover:not(:disabled) {
+    border-color: #aaa;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+  }
+
+  &.open {
+    border-color: #007bff;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.trigger-overlay {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+}
+
+.popover-content {
+  position: absolute;
+  z-index: 1000;
+  animation: fadeIn 0.15s ease;
+
+  &.position-bottom {
+    top: calc(100% + 8px);
+    left: 0;
+  }
+
+  &.position-top {
+    bottom: calc(100% + 8px);
+    left: 0;
+  }
+
+  &.position-left {
+    right: calc(100% + 8px);
+    top: 0;
+  }
+
+  &.position-right {
+    left: calc(100% + 8px);
+    top: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

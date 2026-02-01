@@ -1,0 +1,31 @@
+<div class="angle-picker-container">
+  <div 
+    class="dial"
+    #dial
+    [class.dragging]="isDragging()"
+    [class.disabled]="disabled()"
+    [style.width.px]="size()"
+    [style.height.px]="size()"
+    (mousedown)="onMouseDown($event)"
+    (touchstart)="onTouchStart($event)">
+    <div class="dial-inner">
+      <div class="dial-pointer" [style.transform]="rotationStyle()">
+        <div class="pointer-tip"></div>
+      </div>
+    </div>
+  </div>
+  
+  @if (showValue()) {
+    <div class="angle-value">
+      <input 
+        type="number" 
+        [value]="angle()"
+        [disabled]="disabled()"
+        (input)="onInputChange($any($event.target).value)"
+        min="0"
+        max="360"
+        class="angle-input"/>
+      <span class="angle-unit">°</span>
+    </div>
+  }
+</div>

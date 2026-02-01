@@ -1,0 +1,59 @@
+:host {
+  position: absolute;
+  bottom: 0;
+  transform: translateX(-50%) translateY(50%);
+  cursor: pointer;
+  z-index: 1;
+  touch-action: none;
+  user-select: none;
+
+  &.dragging {
+    cursor: grabbing;
+    z-index: 10;
+  }
+
+  &.deleting {
+    .color-stop-marker {
+      transform: scale(0.8);
+      opacity: 0.5;
+      box-shadow: 0 0 0 2px #ff4444, 0 0 0 4px rgba(255, 68, 68, 0.3);
+      animation: shake 0.3s ease-in-out infinite;
+    }
+  }
+
+  &:hover:not(.dragging) {
+    .color-stop-marker {
+      transform: scale(1.1);
+    }
+  }
+}
+
+.color-stop-marker {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+  position: relative;
+}
+
+.color-input-hidden {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: scale(0.8) translateX(0);
+  }
+  25% {
+    transform: scale(0.8) translateX(-2px);
+  }
+  75% {
+    transform: scale(0.8) translateX(2px);
+  }
+}

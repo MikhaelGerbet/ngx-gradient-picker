@@ -1,0 +1,37 @@
+{
+  "name": "ngx-gradient-picker",
+  "version": "1.0.0",
+  "description": "A modern Angular gradient picker component with draggable color stops, angle picker, and support for linear/radial gradients",
+  "keywords": [
+    "angular",
+    "gradient",
+    "gradient-picker",
+    "color-picker",
+    "linear-gradient",
+    "radial-gradient",
+    "ng",
+    "ngx"
+  ],
+  "author": {
+    "name": "Mikhaël GERBET",
+    "email": "frollon.noir@gmail.com",
+    "url": "https://github.com/MikhaelGerbet"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MikhaelGerbet/ngx-gradient-picker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MikhaelGerbet/ngx-gradient-picker/issues"
+  },
+  "homepage": "https://github.com/MikhaelGerbet/ngx-gradient-picker#readme",
+  "peerDependencies": {
+    "@angular/common": "^17.0.0 || ^18.0.0 || ^19.0.0 || ^20.0.0",
+    "@angular/core": "^17.0.0 || ^18.0.0 || ^19.0.0 || ^20.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false
+}

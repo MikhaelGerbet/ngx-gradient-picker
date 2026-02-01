@@ -1,0 +1,23 @@
+<div 
+  class="stops-container" 
+  #stopsContainer
+  [class.can-add]="canAddStop() && !disabled()"
+  (click)="onContainerClick($event)"
+  (mousemove)="onContainerMouseMove($event)"
+  (mouseleave)="onContainerMouseLeave()">
+  
+  @if (hoverPosition() !== null) {
+    <div class="playhead" [style.left.%]="hoverPosition()"></div>
+  }
+  
+  @for (stop of palette(); track trackByStopId($index, stop)) {
+    <ngx-color-stop
+      [stop]="stop"
+      [disabled]="disabled()"
+      [isBeingDeleted]="isInDeleteZone() && draggingStop()?.id === stop.id"
+      (stopSelect)="onStopSelect($event)"
+      (dragStart)="onDragStart($event)"
+      (colorChange)="onStopColorChange($event)"
+      (delete)="onStopDelete($event)"/>
+  }
+</div>

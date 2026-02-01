@@ -1,0 +1,34 @@
+<div class="popover-container">
+  <!-- Trigger button -->
+  <button 
+    type="button"
+    class="popover-trigger"
+    [class.open]="isOpen()"
+    [disabled]="disabled()"
+    [style.background]="triggerGradientCSS()"
+    (click)="toggle()">
+    <span class="trigger-overlay"></span>
+  </button>
+
+  <!-- Popover content -->
+  @if (isOpen()) {
+    <div class="popover-content" [class]="'position-' + position()">
+      <ngx-gradient-picker
+        #picker
+        [(palette)]="palette"
+        [(type)]="type"
+        [(angle)]="angle"
+        [width]="width()"
+        [paletteHeight]="paletteHeight()"
+        [minStops]="minStops()"
+        [maxStops]="maxStops()"
+        [direction]="direction()"
+        [showAnglePicker]="showAnglePicker()"
+        [showTypePicker]="showTypePicker()"
+        [disabled]="disabled()"
+        (colorStopSelect)="onStopSelect($event)">
+        <ng-content></ng-content>
+      </ngx-gradient-picker>
+    </div>
+  }
+</div>

@@ -1,0 +1,258 @@
+<div class="demo-container">
+  <header class="demo-header">
+    <h1>ngx-gradient-picker</h1>
+    <p>A modern Angular gradient picker with draggable color stops</p>
+    <div class="badges">
+      <img src="https://img.shields.io/npm/v/ngx-gradient-picker?style=flat-square" alt="npm version">
+      <img src="https://img.shields.io/npm/l/ngx-gradient-picker?style=flat-square" alt="license">
+      <img src="https://img.shields.io/badge/Angular-17%2B-dd0031?style=flat-square&logo=angular" alt="Angular 17+">
+      <img src="https://img.shields.io/badge/gzip-~15KB-brightgreen?style=flat-square" alt="Bundle size">
+      <img src="https://img.shields.io/badge/tests-13%20passing-brightgreen?style=flat-square" alt="Tests">
+    </div>
+  </header>
+
+  <main class="demo-content">
+    <!-- Live Demo Section -->
+    <section class="demo-section">
+      <h2>Live Demo</h2>
+      <p class="hint">
+        <strong>Click</strong> on the gradient bar to add a stop • 
+        <strong>Drag</strong> stops to reposition • 
+        <strong>Double-click</strong> to change color • 
+        <strong>Drag down</strong> to delete
+      </p>
+      
+      <div class="picker-wrapper">
+        <ngx-gradient-picker
+          #picker
+          [(palette)]="palette"
+          [(angle)]="angle"
+          [(type)]="type"
+          [width]="400"
+          [paletteHeight]="40"
+          [minStops]="2"
+          [maxStops]="6"/>
+      </div>
+
+      <div class="output-section">
+        <h3>Generated CSS</h3>
+        <code class="css-output">background: {{ getGradientCSS() }};</code>
+      </div>
+
+      <div class="preview-box" [style.background]="getGradientCSS()">
+        Live Preview
+      </div>
+    </section>
+
+    <!-- Popover Mode Demo -->
+    <section class="demo-section">
+      <h2>Popover Mode</h2>
+      <p>Perfect for forms and compact UIs. Click the button to open the picker.</p>
+      
+      <div class="popover-demo">
+        <ngx-gradient-picker-popover
+          [(palette)]="popoverPalette"
+          [(angle)]="popoverAngle"
+          [width]="350"
+          [position]="'bottom'">
+        </ngx-gradient-picker-popover>
+        
+        <span class="popover-label">← Click to open picker</span>
+      </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section class="demo-section installation">
+      <h2>Installation</h2>
+      
+      <div class="code-block">
+        <div class="code-header">
+          <span>npm</span>
+          <button class="copy-btn" (click)="copyToClipboard('npm install ngx-gradient-picker')">Copy</button>
+        </div>
+        <pre><code>npm install ngx-gradient-picker</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span>yarn</span>
+          <button class="copy-btn" (click)="copyToClipboard('yarn add ngx-gradient-picker')">Copy</button>
+        </div>
+        <pre><code>yarn add ngx-gradient-picker</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span>pnpm</span>
+          <button class="copy-btn" (click)="copyToClipboard('pnpm add ngx-gradient-picker')">Copy</button>
+        </div>
+        <pre><code>pnpm add ngx-gradient-picker</code></pre>
+      </div>
+    </section>
+
+    <!-- Usage Examples Section -->
+    <section class="demo-section usage">
+      <h2>Quick Start</h2>
+
+      <h3>Basic Usage</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span>app.component.ts</span>
+        </div>
+        <pre><code>{{ basicUsageCode }}</code></pre>
+      </div>
+
+      <h3>Template</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span>app.component.html</span>
+        </div>
+        <pre><code>{{ basicTemplateCode }}</code></pre>
+      </div>
+    </section>
+
+    <!-- Reactive Forms Section -->
+    <section class="demo-section usage">
+      <h2>With Reactive Forms</h2>
+      
+      <div class="code-block">
+        <div class="code-header">
+          <span>form.component.ts</span>
+        </div>
+        <pre><code>{{ reactiveFormCode }}</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span>form.component.html</span>
+        </div>
+        <pre><code>{{ reactiveFormTemplateCode }}</code></pre>
+      </div>
+    </section>
+
+    <!-- API Reference Section -->
+    <section class="demo-section api">
+      <h2>API Reference</h2>
+      
+      <h3>GradientPickerComponent</h3>
+      <div class="api-table-wrapper">
+        <table class="api-table">
+          <thead>
+            <tr>
+              <th>Input/Output</th>
+              <th>Type</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>[(palette)]</code></td>
+              <td><code>ColorStop[]</code></td>
+              <td>-</td>
+              <td>Two-way binding for color stops array</td>
+            </tr>
+            <tr>
+              <td><code>[(angle)]</code></td>
+              <td><code>number</code></td>
+              <td><code>90</code></td>
+              <td>Gradient angle in degrees (0-360)</td>
+            </tr>
+            <tr>
+              <td><code>[(type)]</code></td>
+              <td><code>'linear' | 'radial'</code></td>
+              <td><code>'linear'</code></td>
+              <td>Gradient type</td>
+            </tr>
+            <tr>
+              <td><code>[width]</code></td>
+              <td><code>number</code></td>
+              <td><code>300</code></td>
+              <td>Width of the gradient picker</td>
+            </tr>
+            <tr>
+              <td><code>[paletteHeight]</code></td>
+              <td><code>number</code></td>
+              <td><code>24</code></td>
+              <td>Height of the gradient bar</td>
+            </tr>
+            <tr>
+              <td><code>[minStops]</code></td>
+              <td><code>number</code></td>
+              <td><code>2</code></td>
+              <td>Minimum number of color stops</td>
+            </tr>
+            <tr>
+              <td><code>[maxStops]</code></td>
+              <td><code>number</code></td>
+              <td><code>10</code></td>
+              <td>Maximum number of color stops</td>
+            </tr>
+            <tr>
+              <td><code>(stopSelect)</code></td>
+              <td><code>EventEmitter&lt;ColorStop&gt;</code></td>
+              <td>-</td>
+              <td>Emits when a stop is selected</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>ColorStop Interface</h3>
+      <div class="code-block">
+        <pre><code>{{ colorStopInterface }}</code></pre>
+      </div>
+
+      <h3>Helper Functions</h3>
+      <div class="code-block">
+        <pre><code>{{ helperFunctionsCode }}</code></pre>
+      </div>
+    </section>
+
+    <!-- Features List -->
+    <section class="demo-section features">
+      <h2>Features</h2>
+      <ul>
+        <li>Draggable color stops with smooth animations</li>
+        <li>Click on gradient bar to add new stops</li>
+        <li>Drag stops down to remove them</li>
+        <li>Double-click stops to open color picker</li>
+        <li>Circular angle picker for linear gradients</li>
+        <li>Linear & Radial gradient support</li>
+        <li>Built with Angular Signals for optimal performance</li>
+        <li>Standalone components - no module needed</li>
+        <li>Full two-way binding support</li>
+        <li>Works with Reactive Forms</li>
+        <li>Fully customizable dimensions</li>
+        <li>Zero dependencies (except Angular)</li>
+      </ul>
+    </section>
+
+    <!-- Angular Compatibility -->
+    <section class="demo-section compatibility">
+      <h2>Angular Compatibility</h2>
+      <table class="compat-table">
+        <thead>
+          <tr>
+            <th>ngx-gradient-picker</th>
+            <th>Angular</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1.x</td>
+            <td>17.x, 18.x, 19.x, 20.x</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer class="demo-footer">
+    <div class="footer-links">
+      <a href="https://github.com/MikhaelGerbet/ngx-gradient-picker" target="_blank">GitHub</a>
+      <a href="https://www.npmjs.com/package/ngx-gradient-picker" target="_blank">npm</a>
+    </div>
+    <p>ngx-gradient-picker © {{ currentYear }} <a href="https://github.com/MikhaelGerbet" target="_blank">Mikhaël GERBET</a> | MIT License</p>
+  </footer>
+</div>

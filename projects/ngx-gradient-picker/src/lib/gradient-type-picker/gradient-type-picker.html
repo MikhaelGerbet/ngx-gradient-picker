@@ -1,0 +1,10 @@
+<button 
+  type="button"
+  class="type-toggle"
+  [class.radial]="type() === 'radial'"
+  [class.disabled]="disabled()"
+  [disabled]="disabled()"
+  [title]="type() === 'linear' ? 'Linear (click for radial)' : 'Radial (click for linear)'"
+  (click)="toggle()">
+  <span class="shape"></span>
+</button>

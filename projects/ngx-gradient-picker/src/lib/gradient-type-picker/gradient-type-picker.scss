@@ -1,0 +1,46 @@
+:host {
+  display: inline-block;
+}
+
+.type-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  background: #f8f8f8;
+  cursor: pointer;
+  transition: border-radius 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover:not(:disabled) {
+    border-color: #aaa;
+  }
+
+  &.radial {
+    border-radius: 50%;
+
+    .shape {
+      border-radius: 50%;
+    }
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.shape {
+  width: 18px;
+  height: 18px;
+  background: #888;
+  border-radius: 3px;
+  transition: border-radius 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

@@ -1,0 +1,35 @@
+<div class="gradient-picker-container" [style.width.px]="width()">
+  <!-- Header with controls -->
+  <div class="gradient-picker-header">
+    @if (showTypePicker()) {
+      <ngx-gradient-type-picker
+        [(type)]="type"
+        [disabled]="disabled()"/>
+    }
+    
+    @if (showAnglePicker() && type() === 'linear') {
+      <ngx-angle-picker
+        [(angle)]="angle"
+        [disabled]="disabled()"
+        [size]="36"/>
+    }
+  </div>
+
+  <!-- Gradient preview and stops -->
+  <div class="gradient-picker-body" [style.height.px]="paletteHeight()">
+    <!-- Palette preview -->
+    <ngx-palette
+      [palette]="palette()"
+      [width]="width()"
+      [height]="paletteHeight()"/>
+    
+    <!-- Color stops overlay -->
+    <ngx-color-stops-holder
+      [palette]="palette()"
+      [minStops]="minStops()"
+      [maxStops]="maxStops()"
+      [disabled]="disabled()"
+      (paletteChange)="onPaletteChange($event)"
+      (stopSelect)="onStopSelect($event)"/>
+  </div>
+</div>
