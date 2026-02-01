@@ -20,6 +20,7 @@ A modern Angular gradient picker component with draggable color stops, circular 
 -  **Click to add** new stops on the gradient bar
 -  **Drag down to delete** stops
 -  **Double-click** to open native color picker
+-  **Single stop = solid color** - one stop automatically becomes a solid color
 -  **Circular angle picker** for linear gradients
 -  **Linear & Radial** gradient support
 -  **Angular Signals** for optimal performance
@@ -179,7 +180,7 @@ The component implements `ControlValueAccessor` - the form value is the CSS grad
 | `[(type)]` | `'linear' \| 'radial'` | `'linear'` | Gradient type |
 | `[width]` | `number` | `300` | Picker width in pixels |
 | `[paletteHeight]` | `number` | `24` | Gradient bar height |
-| `[minStops]` | `number` | `2` | Minimum color stops |
+| `[minStops]` | `number` | `2` | Minimum color stops (set to 1 for solid colors) |
 | `[maxStops]` | `number` | `10` | Maximum color stops |
 | `(stopSelect)` | `EventEmitter<ColorStop>` | - | Emitted when a stop is selected |
 | `formControlName` | `string` | - | Binds CSS output to form control |
@@ -222,6 +223,25 @@ const stop = createColorStop(0.5, '#ff0000');
 // Generate CSS from palette
 const css = paletteToCSS(palette, 90, 'linear');
 // 'linear-gradient(90deg, #ff0000 0%, #00ff00 100%)'
+```
+
+## 🎨 Solid Color Support
+
+When only **one color stop** is present, the picker automatically outputs a **solid color** instead of a gradient:
+
+```typescript
+// Single stop = solid color output
+const palette = [createColorStop(0, '#ff6b6b')];
+const css = paletteToCSS(palette, 90, 'linear');
+// Returns: '#ff6b6b' (not 'linear-gradient(...)')
+```
+
+To allow users to create solid colors, set `minStops` to `1`:
+
+```html
+<ngx-gradient-picker
+  [(palette)]="palette"
+  [minStops]="1" />
 ```
 
 ##  User Interactions
