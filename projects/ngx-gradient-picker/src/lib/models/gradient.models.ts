@@ -86,9 +86,23 @@ export function sortStopsByOffset(stops: ColorStop[]): ColorStop[] {
 
 /**
  * Utility function to generate CSS gradient string
+ * Returns a solid color if only one stop is present
  */
 export function generateGradientCSS(config: GradientConfig): string {
   const sortedStops = sortStopsByOffset(config.stops);
+  
+  // Single stop = solid color
+  if (sortedStops.length === 1) {
+    const stop = sortedStops[0];
+    const opacity = stop.opacity ?? 1;
+    return opacity < 1 ? hexToRgba(stop.color, opacity) : stop.color;
+  }
+  
+  // No stops = transparent
+  if (sortedStops.length === 0) {
+    return 'transparent';
+  }
+  
   const stopsString = sortedStops
     .map(stop => {
       const opacity = stop.opacity ?? 1;
