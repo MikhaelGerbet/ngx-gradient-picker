@@ -6,7 +6,7 @@ A modern Angular gradient picker component with draggable color stops, circular 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Angular](https://img.shields.io/badge/Angular-17%2B-dd0031.svg)](https://angular.io/)
 [![Bundle Size](https://img.shields.io/badge/gzip-~15KB-brightgreen.svg)](https://bundlephobia.com/package/ngx-gradient-picker)
-[![Tests](https://img.shields.io/badge/tests-13%20passing-brightgreen.svg)](https://github.com/MikhaelGerbet/ngx-gradient-picker)
+[![CI](https://github.com/MikhaelGerbet/ngx-gradient-picker/actions/workflows/ci.yml/badge.svg)](https://github.com/MikhaelGerbet/ngx-gradient-picker/actions/workflows/ci.yml)
 
 **[📺 Live Demo](https://mikhaelgerbet.github.io/ngx-gradient-picker/)**
 
