@@ -8,7 +8,8 @@
     "build": "ng build ngx-gradient-picker",
     "build:demo": "ng build demo",
     "watch": "ng build ngx-gradient-picker --watch",
-    "test": "ng test"
+    "test": "ng test",
+    "test:ci": "ng test ngx-gradient-picker --no-watch --browsers=ChromeHeadless"
   },
   "prettier": {
     "printWidth": 100,
