@@ -364,7 +364,7 @@ Example customization:
 
 | ngx-gradient-picker | Angular |
 |---------------------|---------|
-| 1.x | 17.x, 18.x, 19.x, 20.x |
+| 1.x | 17.x, 18.x, 19.x, 20.x, 21.x |
 
 ## 📦 Bundle Size
 
